@@ -8,7 +8,9 @@ import (
 	"github.com/quincy0/live-ai/store"
 	"github.com/quincy0/qpro/cryption"
 	"github.com/quincy0/qpro/qHttp"
+	"github.com/quincy0/qpro/qLog"
 	"github.com/quincy0/qpro/qRedis"
+	"go.uber.org/zap"
 )
 
 // http://events.vicp.net/?spk=aeyes&text=你好文本
@@ -49,10 +51,13 @@ func CreateAudio(ctx context.Context, recreate int, spkId, text string) (string,
 		return "", errors.New("音频生成中，请稍后尝试")
 	}
 	fileURL, err := CreateChatAudio(ctx, recreate, spkId, text)
+
 	qRedis.Client.Del(ctx, lockKey)
 	if err != nil {
+		qLog.Error("create audio error", zap.Error(err))
 		return "", err
 	}
+	qLog.Info("create audio success", zap.String("fileURL", fileURL))
 	qRedis.Client.Set(ctx, sum, fileURL, 0)
 	return fileURL, nil
 }

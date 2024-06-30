@@ -15,8 +15,8 @@ log:
   maxAge: 30
   maxBackups: 10
   maxsize: 500
-#  path: /data/log/aeyes-scheduler/scheduler.log
-  path: ./logs/scheduler.log
+  path: /data/log/aeyes-scheduler/scheduler.log
+#  path: ./logs/scheduler.log
   # for tracing
   collectorURL: "129.226.203.96:4317"
   insecure: true

@@ -7,6 +7,7 @@ import (
 	"github.com/quincy0/live-ai/service/consoleService"
 	"github.com/quincy0/live-ai/store"
 	"github.com/quincy0/live-ai/tts"
+	"github.com/quincy0/live-ai/util"
 	"github.com/quincy0/qpro/qRoutine"
 )
 
@@ -23,7 +24,8 @@ func AudioList(ctx context.Context, roomId string) (*dto.RoomData, error) {
 			} else {
 				scene.Audio = ""
 				qRoutine.GoSafe(func() {
-					tts.CreateAudio(ctx, 0, roomData.TTS.Name, scene.Content)
+					ctxNew := util.InitContextWithSameTrace(ctx)
+					tts.CreateAudio(ctxNew, 0, roomData.TTS.Name, scene.Content)
 				})
 			}
 		}
