@@ -3,9 +3,8 @@ module github.com/quincy0/live-ai
 go 1.20
 
 require (
-	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/gin-gonic/gin v1.9.1
-	github.com/quincy0/qpro v0.0.1
+	github.com/quincy0/qpro v0.0.2
 	github.com/spf13/cobra v1.8.1
 	github.com/volcengine/ve-tos-golang-sdk/v2 v2.6.9
 	go.uber.org/zap v1.27.0
@@ -90,5 +89,3 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/quincy0/qpro => /Users/quincy/web3/qpro
