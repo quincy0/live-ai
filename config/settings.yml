@@ -1,0 +1,46 @@
+application:
+  host: 0.0.0.0
+  isHttps: false
+  mode: prod
+  name: dh-scheduler
+  port: "9003"
+  readTimeoutSeconds: 600
+  writerTimeoutSeconds: 600
+log:
+  compress: 1
+  consoleStdout: 0
+  fileStdout: 1
+  level: debug
+  localtime: 1
+  maxAge: 30
+  maxBackups: 10
+  maxsize: 500
+#  path: /data/log/aeyes-scheduler/scheduler.log
+  path: ./logs/scheduler.log
+  # for tracing
+  collectorURL: "129.226.203.96:4317"
+  insecure: true
+database:
+  host: 101.126.93.55
+  port: 3306
+  name: data_center
+  username: root
+  password: aeyes2024
+  maxOpenConn: 5
+  maxIdleConn: 3
+redis:
+  host: 101.126.93.55
+  port: 6379
+  dataBase: 0
+  password: aeyes2024
+  maxIdleConn: 10
+  minIdleConn: 5
+jwt:
+  secret: anchor-console
+  timeoutSeconds: 8640
+email:
+  host:
+  port:
+  username:
+  alias:
+  password:
