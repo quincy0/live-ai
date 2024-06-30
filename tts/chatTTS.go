@@ -48,6 +48,7 @@ func CreateAudio(ctx context.Context, recreate int, spkId, text string) (string,
 		return "", err
 	}
 	if !isSucc && recreate == 0 {
+		qLog.Info("create is locking", zap.String("text", text))
 		return "", errors.New("音频生成中，请稍后尝试")
 	}
 	fileURL, err := CreateChatAudio(ctx, recreate, spkId, text)
