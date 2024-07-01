@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/quincy0/live-ai/service/audioService"
 	"github.com/quincy0/live-ai/tts"
+	"github.com/quincy0/live-ai/util"
 	"github.com/quincy0/qpro/app"
 	"github.com/quincy0/qpro/qLog"
 	"go.uber.org/zap"
@@ -19,7 +20,8 @@ func AudioCreate(c *gin.Context) {
 		return
 	}
 
-	url, err := tts.CreateChatAudio(ctx, params.Recreate, params.Spk, params.Text)
+	ctxNew := util.InitContextWithSameTrace(ctx)
+	url, err := tts.CreateChatAudio(ctxNew, params.Recreate, params.Spk, params.Text)
 	if err != nil {
 		app.Error(c, 800001, err)
 		return
