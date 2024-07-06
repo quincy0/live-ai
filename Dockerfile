@@ -24,5 +24,5 @@ WORKDIR /app
 COPY --from=builder /app/welive .
 COPY --from=builder /app/config .
 
-ENTRYPOINT ["/app/dwelive"]
+ENTRYPOINT ["/app/welive"]
 CMD ["-c", "/app/welive.yml"]
