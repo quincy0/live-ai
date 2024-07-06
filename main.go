@@ -18,6 +18,7 @@ import (
 	"github.com/quincy0/qpro/qRedis"
 	"github.com/quincy0/qpro/qRoutine"
 	qTrace "github.com/quincy0/qpro/qTrace"
+	"github.com/quincy0/qpro/qdb"
 
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -61,7 +62,7 @@ func setup() {
 	// 2. 日志配置
 	qLog.Init(qConfig.Settings.Log)
 	// 3. 初始化数据库链接
-	//database.InitMysql()
+	qdb.InitMysql()
 	// 4. 初始化Redis
 	qRedis.InitRedis()
 }

@@ -14,6 +14,8 @@ func Init() *gin.Engine {
 	middleware.InitMiddleware(r)
 	audio := r.Group("dh")
 	RegisterAudio(audio)
+	liveApi := r.Group("api/welive")
+	RegisterLiveMoney(liveApi)
 	return r
 
 }
@@ -32,5 +34,15 @@ func RegisterAudio(g *gin.RouterGroup) {
 			controller.AudioCreate,
 		)
 		v1.GET("/audio/list", controller.AudioList)
+	}
+}
+
+func RegisterLiveMoney(g *gin.RouterGroup) {
+	v1 := g.Group("v1")
+	{
+		v1.GET("/goods/list", controller.GoodsList)
+		v1.GET("/script/list", controller.ScriptList)
+		v1.POST("/script/upsert", controller.ScriptUpsert)
+		v1.GET("/script/info", controller.ScriptInfo)
 	}
 }
