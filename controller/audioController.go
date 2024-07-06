@@ -88,7 +88,7 @@ func ScriptList(c *gin.Context) {
 func ScriptUpsert(c *gin.Context) {
 	ctx := c.Request.Context()
 	var params dto.CreateScriptParam
-	err := c.ShouldBindQuery(&params)
+	err := c.ShouldBindJSON(&params)
 	if err != nil {
 		qLog.TraceError(ctx, "get params failed", zap.Error(err))
 		app.Error(c, 100000, err)

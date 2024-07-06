@@ -44,7 +44,7 @@ var (
 )
 
 func init() {
-	StartCmd.PersistentFlags().StringVarP(&configPath, "configPath", "c", "config/settings.yml", "Start server with provided configuration file")
+	StartCmd.PersistentFlags().StringVarP(&configPath, "configPath", "c", "config/welive.yml", "Start server with provided configuration file")
 	StartCmd.PersistentFlags().StringVarP(&port, "port", "p", "9003", "Tcp port server listening on")
 	StartCmd.PersistentFlags().StringVarP(&mode, "mode", "m", "dev", "server mode ; eg:dev,test,prod")
 }
