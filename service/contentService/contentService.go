@@ -11,12 +11,12 @@ import (
 
 type ChapterDetail struct {
 	*table.ChapterTable
-	list []*table.ParagraphTable
+	List []*table.ParagraphTable `json:"list"`
 }
 
 type ScriptDetail struct {
 	*table.ScriptTable
-	list []*table.SceneTable
+	List []*table.SceneTable `json:"list"`
 }
 
 func ChapterCreate(ctx context.Context, params *dto.ChapterCreateParam) (int64, error) {
@@ -75,10 +75,10 @@ func ChapterList(ctx context.Context, page dto.PageParam) ([]*table.ChapterTable
 }
 
 func ChapterInfo(ctx context.Context, chapterId int64) (*ChapterDetail, error) {
-	var chapter *table.ChapterTable
+	var chapter table.ChapterTable
 	err := qdb.Db.WithContext(ctx).Model(&table.ChapterTable{}).
 		Where("chapter_id = ?", chapterId).
-		Find(chapter).
+		Find(&chapter).
 		Error
 	if err != nil {
 		return nil, err
@@ -93,8 +93,8 @@ func ChapterInfo(ctx context.Context, chapterId int64) (*ChapterDetail, error) {
 		return nil, err
 	}
 	return &ChapterDetail{
-		ChapterTable: chapter,
-		list:         paragraphs,
+		ChapterTable: &chapter,
+		List:         paragraphs,
 	}, nil
 }
 
@@ -103,7 +103,7 @@ func ParagraphEdit(ctx context.Context, params dto.ParagraphEditParam) error {
 		Model(&table.ParagraphTable{}).
 		Where("paragraph_id = ?", params.ParagraphId).
 		Select("paragraph_title", "content").
-		Updates(map[string]string{"paragraph_title": params.ParagraphTitle, "content": params.Content}).
+		Updates(map[string]interface{}{"paragraph_title": params.ParagraphTitle, "content": params.Content}).
 		Error
 }
 
@@ -121,8 +121,8 @@ func ScriptCreate(ctx context.Context, params *dto.ScriptCreateParam) (int64, er
 		Timbre:      params.Timbre,
 		LastPlay:    0,
 	}
-	list := make([]*table.SceneTable, len(chapter.list))
-	for k, v := range chapter.list {
+	list := make([]*table.SceneTable, len(chapter.List))
+	for k, v := range chapter.List {
 		list[k] = &table.SceneTable{
 			SceneId:   0,
 			ScriptId:  0,
@@ -190,7 +190,7 @@ func ScriptInfo(ctx context.Context, scriptId int64) (*ScriptDetail, error) {
 	}
 	return &ScriptDetail{
 		ScriptTable: &script,
-		list:        list,
+		List:        list,
 	}, nil
 }
 
