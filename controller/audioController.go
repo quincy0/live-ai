@@ -69,22 +69,6 @@ func GoodsList(c *gin.Context) {
 	app.PageOK(c, list, count, params.PageNum, params.PageSize)
 }
 
-func ScriptList(c *gin.Context) {
-	ctx := c.Request.Context()
-	var params = dto.PageParam{
-		PageSize: 100,
-		PageNum:  1,
-	}
-	err := c.BindQuery(&params)
-	if err != nil {
-		qLog.TraceError(ctx, "get params failed", zap.Error(err))
-		app.Error(c, 100000, err)
-		return
-	}
-	list, count, err := scriptService.List(ctx, params)
-	app.PageOK(c, list, count, params.PageNum, params.PageSize)
-}
-
 func ScriptUpsert(c *gin.Context) {
 	ctx := c.Request.Context()
 	var params dto.CreateScriptParam
@@ -106,24 +90,6 @@ func ScriptUpsert(c *gin.Context) {
 		return
 	}
 	app.OK(c, scene)
-}
-
-func ScriptInfo(c *gin.Context) {
-	ctx := c.Request.Context()
-	var params dto.ScriptInfoParam
-	err := c.ShouldBindQuery(&params)
-	if err != nil {
-		qLog.TraceError(ctx, "get params failed", zap.Error(err))
-		app.Error(c, 100000, err)
-		return
-	}
-	info, err := scriptService.Info(ctx, params.ScriptId)
-	if err != nil {
-		qLog.TraceError(ctx, "get script info failed", zap.Int64("scriptId", params.ScriptId), zap.Error(err))
-		app.Error(c, 200002, err)
-		return
-	}
-	app.OK(c, info)
 }
 
 /*

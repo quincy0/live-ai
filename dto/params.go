@@ -30,3 +30,37 @@ type PageParam struct {
 	PageSize int `form:"pageSize"`
 	PageNum  int `form:"pageNum"`
 }
+
+type ChapterCreateParam struct {
+	ChapterTitle string           `form:"chapterTitle"`
+	ScriptTag    string           `form:"scriptTag"`
+	ProductTag   string           `form:"productTag"`
+	Summary      string           `form:"summary"`
+	Paragraph    []*ParagraphItem `form:"paragraph"`
+}
+
+type ChapterInfoParam struct {
+	ChapterId int64 `form:"chapterId"`
+}
+
+type ParagraphItem struct {
+	ParagraphTitle string `form:"paragraphTitle"`
+	Content        string `form:"content"`
+}
+
+type ParagraphEditParam struct {
+	ParagraphId    int64  `form:"paragraphId"`
+	ParagraphTitle string `form:"paragraphTitle"`
+	Content        string `form:"content"`
+}
+
+type ScriptCreateParam struct {
+	ChapterId   int64  `form:"chapterId"`
+	ScriptTitle string `form:"scriptTitle"`
+	Timbre      string `form:"timbre"`
+}
+
+type SceneEditParam struct {
+	SceneId int64  `form:"sceneId" binding:"required"`
+	Audio   string `form:"audio" binding:"required"`
+}

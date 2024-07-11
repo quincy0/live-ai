@@ -31,7 +31,6 @@ func Edit(ctx context.Context, params dto.CreateScriptParam) (*table.ScriptScene
 		}
 		script := &table.ScriptInfo{
 			ScriptName: params.ScriptName,
-			GoodsId:    params.GoodsId,
 		}
 		err := qdb.Db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 			if err := tx.Create(script).Error; err != nil {
@@ -89,7 +88,6 @@ func Info(ctx context.Context, scriptId int64) (*ScriptDetail, error) {
 	return &ScriptDetail{
 		ScriptId:   script.ScriptId,
 		ScriptName: script.ScriptName,
-		GoodsId:    script.GoodsId,
 		Scenes:     list,
 	}, nil
 }

@@ -41,8 +41,16 @@ func RegisterLiveMoney(g *gin.RouterGroup) {
 	v1 := g.Group("v1")
 	{
 		v1.GET("/goods/list", controller.GoodsList)
+
+		v1.GET("/product/tags", controller.ProductTagList)
+
+		v1.POST("/chapter/create", controller.ChapterCreate)
+		v1.GET("/chapter/list", controller.ChapterList)
+		v1.GET("/chapter/info", controller.ChapterInfo)
+		v1.POST("/paragraph/edit", controller.ParagraphEdit)
+		v1.POST("/script/create", controller.ScriptCreate)
 		v1.GET("/script/list", controller.ScriptList)
-		v1.POST("/script/upsert", controller.ScriptUpsert)
 		v1.GET("/script/info", controller.ScriptInfo)
+		v1.POST("/scene/edit", controller.SceneEdit)
 	}
 }
