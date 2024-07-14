@@ -146,22 +146,42 @@ CREATE TABLE `room_script` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='直播剧本表';
 
 
+
+
+DROP TABLE IF EXISTS `user_info`;
+CREATE TABLE `user_info` (
+                             `user_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+                             `username` varchar(64) NOT NULL COMMENT '用户名',
+                             `password` char(32) NOT NULL COMMENT '密码',
+                             `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+                             `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                             PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户信息';
+
 DROP TABLE IF EXISTS `room_info`;
 CREATE TABLE `room_info` (
-                               `room_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '直播间ID',
-                               `script_id` bigint unsigned NOT NULL COMMENT '剧本ID',
-                               `last_play` bigint unsigned NOT NULL COMMENT '上次播放时间',
-                               `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
-                               `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                               PRIMARY KEY (`room_id`)
+                             `room_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '直播间ID',
+                             `user_id` bigint unsigned NOT NULL COMMENT '用户ID',
+                             `room_name` varchar(128) NOT NULL DEFAULT '' COMMENT '直播间名称',
+                             `product_tag` varchar(128) not null default '' comment '剧本品类',
+                             `timbre` varchar(128) not null default '' comment '音色',
+                             `template_id` int unsigned not null default '1' comment '模版id',
+                             `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+                             `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                             PRIMARY KEY (`room_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='直播间信息';
 
 DROP TABLE IF EXISTS `room_script`;
 CREATE TABLE `room_script` (
-                             `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '表自增ID',
-                             `room_id` bigint unsigned NOT NULL COMMENT '直播间ID',
-                             `script_name` varchar(128) NOT NULL DEFAULT '' COMMENT '直播间名称',
-                             `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
-                             `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                             PRIMARY KEY (`id`)
+                               `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '表自增ID',
+                               `room_id` bigint unsigned NOT NULL COMMENT '直播间ID',
+                               `script_id` bigint unsigned NOT NULL COMMENT '剧本ID',
+                               `product_tag` varchar(128) not null default '' comment '剧本品类',
+                               `timbre` varchar(128) not null default '' comment '音色',
+                               `script_tag` varchar(128) not null default '' comment '剧本标签',
+                               `sequence` int unsigned NOT NULL COMMENT '序号',
+                               `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+                               `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                               PRIMARY KEY (`id`),
+                               UNIQUE KEY `uk_room_script` (`room_id`,`script_id`, `sequence`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='直播间剧本';

@@ -13,6 +13,7 @@ import (
 
 	"github.com/quincy0/live-ai/router"
 	"github.com/quincy0/live-ai/util"
+	"github.com/quincy0/qpro/cryption"
 	"github.com/quincy0/qpro/qConfig"
 	"github.com/quincy0/qpro/qLog"
 	"github.com/quincy0/qpro/qRedis"
@@ -117,5 +118,6 @@ func run() error {
 }
 
 func main() {
+	fmt.Println(cryption.Md5Encode([]byte("wang#1991")))
 	StartCmd.Execute()
 }

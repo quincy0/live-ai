@@ -5,6 +5,9 @@ import (
 	"github.com/quincy0/live-ai/consts"
 	"github.com/quincy0/live-ai/dto"
 	"github.com/quincy0/live-ai/service/contentService"
+	"github.com/quincy0/live-ai/service/roomService"
+	"github.com/quincy0/live-ai/service/userService"
+	"github.com/quincy0/live-ai/util"
 	"github.com/quincy0/qpro/app"
 	"github.com/quincy0/qpro/qLog"
 	"go.uber.org/zap"
@@ -14,7 +17,16 @@ func ProductTagList(c *gin.Context) {
 	app.OK(c, consts.ProductTagList)
 }
 
+func ScriptTagList(c *gin.Context) {
+	app.OK(c, consts.ScriptTagList)
+}
+
+func RoomTemplateList(c *gin.Context) {
+	app.OK(c, consts.RoomTemplateList)
+}
+
 func ChapterCreate(c *gin.Context) {
+	user := util.ParseUser(c)
 	ctx := c.Request.Context()
 	var params dto.ChapterCreateParam
 	err := c.ShouldBindJSON(&params)
@@ -23,7 +35,7 @@ func ChapterCreate(c *gin.Context) {
 		app.Error(c, 100000, err)
 		return
 	}
-	chapterId, err := contentService.ChapterCreate(ctx, &params)
+	chapterId, err := contentService.ChapterCreate(ctx, user.UserId, &params)
 	if err != nil {
 		qLog.TraceError(ctx, "chapter create failed", zap.Error(err))
 		app.Error(c, 400000, err)
@@ -34,6 +46,7 @@ func ChapterCreate(c *gin.Context) {
 }
 
 func ChapterList(c *gin.Context) {
+	user := util.ParseUser(c)
 	ctx := c.Request.Context()
 	var params = dto.PageParam{
 		PageSize: 100,
@@ -45,7 +58,7 @@ func ChapterList(c *gin.Context) {
 		app.Error(c, 100000, err)
 		return
 	}
-	list, count, err := contentService.ChapterList(ctx, params)
+	list, count, err := contentService.ChapterList(ctx, user.UserId, params)
 	if err != nil {
 		qLog.TraceError(ctx, "chapter list failed", zap.Error(err))
 		app.Error(c, 400001, err)
@@ -55,6 +68,7 @@ func ChapterList(c *gin.Context) {
 }
 
 func ChapterInfo(c *gin.Context) {
+	user := util.ParseUser(c)
 	ctx := c.Request.Context()
 	var params dto.ChapterInfoParam
 	err := c.ShouldBindQuery(&params)
@@ -63,7 +77,7 @@ func ChapterInfo(c *gin.Context) {
 		app.Error(c, 100000, err)
 		return
 	}
-	detail, err := contentService.ChapterInfo(ctx, params.ChapterId)
+	detail, err := contentService.ChapterInfo(ctx, user.UserId, params.ChapterId)
 	if err != nil {
 		qLog.TraceError(ctx, "get chapter failed", zap.Error(err))
 		app.Error(c, 400002, err)
@@ -91,6 +105,7 @@ func ParagraphEdit(c *gin.Context) {
 }
 
 func ScriptCreate(c *gin.Context) {
+	user := util.ParseUser(c)
 	ctx := c.Request.Context()
 	var params dto.ScriptCreateParam
 	err := c.ShouldBindJSON(&params)
@@ -99,7 +114,7 @@ func ScriptCreate(c *gin.Context) {
 		app.Error(c, 100000, err)
 		return
 	}
-	scriptId, err := contentService.ScriptCreate(ctx, &params)
+	scriptId, err := contentService.ScriptCreate(ctx, user.UserId, &params)
 	if err != nil {
 		qLog.TraceError(ctx, "chapter create failed", zap.Error(err))
 		app.Error(c, 400100, err)
@@ -110,6 +125,7 @@ func ScriptCreate(c *gin.Context) {
 }
 
 func ScriptList(c *gin.Context) {
+	user := util.ParseUser(c)
 	ctx := c.Request.Context()
 	var params = dto.PageParam{
 		PageSize: 100,
@@ -121,7 +137,7 @@ func ScriptList(c *gin.Context) {
 		app.Error(c, 100000, err)
 		return
 	}
-	list, count, err := contentService.ScriptList(ctx, params)
+	list, count, err := contentService.ScriptList(ctx, user.UserId, params)
 	if err != nil {
 		qLog.TraceError(ctx, "script list failed", zap.Error(err))
 		app.Error(c, 400101, err)
@@ -131,6 +147,7 @@ func ScriptList(c *gin.Context) {
 }
 
 func ScriptInfo(c *gin.Context) {
+	user := util.ParseUser(c)
 	ctx := c.Request.Context()
 	var params dto.ScriptInfoParam
 	err := c.ShouldBindQuery(&params)
@@ -139,7 +156,7 @@ func ScriptInfo(c *gin.Context) {
 		app.Error(c, 100000, err)
 		return
 	}
-	detail, err := contentService.ScriptInfo(ctx, params.ScriptId)
+	detail, err := contentService.ScriptInfo(ctx, user.UserId, params.ScriptId)
 	if err != nil {
 		qLog.TraceError(ctx, "get script failed", zap.Error(err))
 		app.Error(c, 400102, err)
@@ -164,4 +181,88 @@ func SceneEdit(c *gin.Context) {
 		return
 	}
 	app.OK(c, "success")
+}
+
+func RoomCreate(c *gin.Context) {
+	user := util.ParseUser(c)
+	ctx := c.Request.Context()
+	var params dto.RoomCreateParam
+	err := c.ShouldBindJSON(&params)
+	if err != nil {
+		qLog.TraceError(ctx, "get params failed", zap.Error(err))
+		app.Error(c, 100000, err)
+		return
+	}
+	roomId, err := roomService.RoomCreate(ctx, user.UserId, params)
+	if err != nil {
+		qLog.TraceError(ctx, "create room failed", zap.Error(err))
+		app.Error(c, 700000, err)
+		return
+	}
+	app.OK(c, map[string]int64{"roomId": roomId})
+}
+
+func RoomList(c *gin.Context) {
+	user := util.ParseUser(c)
+	ctx := c.Request.Context()
+	var params = dto.PageParam{
+		PageSize: 100,
+		PageNum:  1,
+	}
+	err := c.BindQuery(&params)
+	if err != nil {
+		qLog.TraceError(ctx, "get params failed", zap.Error(err))
+		app.Error(c, 100000, err)
+		return
+	}
+	list, count, err := roomService.RoomList(ctx, user.UserId, params)
+	if err != nil {
+		qLog.TraceError(ctx, "get room list failed", zap.Error(err))
+		app.Error(c, 700001, err)
+		return
+	}
+	app.PageOK(c, list, count, params.PageNum, params.PageSize)
+}
+
+func RoomInfo(c *gin.Context) {
+	user := util.ParseUser(c)
+	ctx := c.Request.Context()
+	var params dto.RoomInfoParam
+	err := c.ShouldBindQuery(&params)
+	if err != nil {
+		qLog.TraceError(ctx, "get params failed", zap.Error(err))
+		app.Error(c, 100000, err)
+		return
+	}
+	roomInfo, err := roomService.RoomInfo(ctx, user.UserId, params.RoomId)
+	if err != nil {
+		qLog.TraceError(ctx, "get room info failed", zap.Error(err))
+		app.Error(c, 700002, err)
+		return
+	}
+	app.OK(c, roomInfo)
+}
+
+func Hello(c *gin.Context) {
+	//ctx := c.Request.Context()
+	user := util.ParseUser(c)
+	app.OK(c, user)
+}
+
+func Register(c *gin.Context) {
+	ctx := c.Request.Context()
+	var params dto.LoginParam
+	err := c.ShouldBindJSON(&params)
+	if err != nil {
+		qLog.TraceError(ctx, "get params failed", zap.Error(err))
+		app.Error(c, 100000, err)
+		return
+	}
+	userId, err := userService.Register(ctx, params.Username, params.Password)
+	if err != nil {
+		qLog.TraceError(ctx, "register failed", zap.Error(err))
+		app.Error(c, 100005, err)
+		return
+	}
+	app.OK(c, map[string]int64{"userId": userId})
 }

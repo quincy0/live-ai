@@ -2,6 +2,7 @@ package contentService
 
 import (
 	"context"
+	"errors"
 
 	"github.com/quincy0/live-ai/dto"
 	"github.com/quincy0/live-ai/table"
@@ -19,9 +20,10 @@ type ScriptDetail struct {
 	List []*table.SceneTable `json:"list"`
 }
 
-func ChapterCreate(ctx context.Context, params *dto.ChapterCreateParam) (int64, error) {
+func ChapterCreate(ctx context.Context, userId int64, params *dto.ChapterCreateParam) (int64, error) {
 	chapter := &table.ChapterTable{
 		ChapterTitle: params.ChapterTitle,
+		UserId:       userId,
 		ScriptTag:    params.ScriptTag,
 		ProductTag:   params.ProductTag,
 		Summary:      params.Summary,
@@ -55,9 +57,10 @@ func ChapterCreate(ctx context.Context, params *dto.ChapterCreateParam) (int64, 
 	return chapter.ChapterId, nil
 }
 
-func ChapterList(ctx context.Context, page dto.PageParam) ([]*table.ChapterTable, int64, error) {
+func ChapterList(ctx context.Context, userId int64, page dto.PageParam) ([]*table.ChapterTable, int64, error) {
 	var list []*table.ChapterTable
 	err := qdb.Db.WithContext(ctx).Model(&table.ChapterTable{}).
+		Where("user_id = ?", userId).
 		Order("chapter_id").
 		Offset((page.PageNum - 1) * page.PageSize).
 		Limit(page.PageSize).
@@ -74,7 +77,7 @@ func ChapterList(ctx context.Context, page dto.PageParam) ([]*table.ChapterTable
 	return list, count, nil
 }
 
-func ChapterInfo(ctx context.Context, chapterId int64) (*ChapterDetail, error) {
+func ChapterInfo(ctx context.Context, userId int64, chapterId int64) (*ChapterDetail, error) {
 	var chapter table.ChapterTable
 	err := qdb.Db.WithContext(ctx).Model(&table.ChapterTable{}).
 		Where("chapter_id = ?", chapterId).
@@ -82,6 +85,9 @@ func ChapterInfo(ctx context.Context, chapterId int64) (*ChapterDetail, error) {
 		Error
 	if err != nil {
 		return nil, err
+	}
+	if chapter.UserId != userId {
+		return nil, errors.New("无权访问该文章")
 	}
 	var paragraphs []*table.ParagraphTable
 	err = qdb.Db.WithContext(ctx).
@@ -107,13 +113,14 @@ func ParagraphEdit(ctx context.Context, params dto.ParagraphEditParam) error {
 		Error
 }
 
-func ScriptCreate(ctx context.Context, params *dto.ScriptCreateParam) (int64, error) {
-	chapter, err := ChapterInfo(ctx, params.ChapterId)
+func ScriptCreate(ctx context.Context, userId int64, params *dto.ScriptCreateParam) (int64, error) {
+	chapter, err := ChapterInfo(ctx, userId, params.ChapterId)
 	if err != nil {
 		return 0, err
 	}
 	script := &table.ScriptTable{
 		ScriptId:    0,
+		UserId:      userId,
 		ScriptTitle: params.ScriptTitle,
 		ScriptTag:   chapter.ScriptTag,
 		ProductTag:  chapter.ProductTag,
@@ -152,9 +159,10 @@ func ScriptCreate(ctx context.Context, params *dto.ScriptCreateParam) (int64, er
 	return script.ScriptId, nil
 }
 
-func ScriptList(ctx context.Context, page dto.PageParam) ([]*table.ScriptTable, int64, error) {
+func ScriptList(ctx context.Context, userId int64, page dto.PageParam) ([]*table.ScriptTable, int64, error) {
 	var list []*table.ScriptTable
 	err := qdb.Db.WithContext(ctx).Model(&table.ScriptTable{}).
+		Where("user_id = ?", userId).
 		Order("script_id").
 		Offset((page.PageNum - 1) * page.PageSize).
 		Limit(page.PageSize).
@@ -171,7 +179,7 @@ func ScriptList(ctx context.Context, page dto.PageParam) ([]*table.ScriptTable, 
 	return list, count, nil
 }
 
-func ScriptInfo(ctx context.Context, scriptId int64) (*ScriptDetail, error) {
+func ScriptInfo(ctx context.Context, userId int64, scriptId int64) (*ScriptDetail, error) {
 	var script table.ScriptTable
 	err := qdb.Db.WithContext(ctx).Model(&table.ScriptTable{}).
 		Where("script_id = ?", scriptId).
@@ -179,6 +187,9 @@ func ScriptInfo(ctx context.Context, scriptId int64) (*ScriptDetail, error) {
 		Error
 	if err != nil {
 		return nil, err
+	}
+	if script.UserId != userId {
+		return nil, errors.New("无权访问该剧本")
 	}
 	var list []*table.SceneTable
 	err = qdb.Db.WithContext(ctx).Model(&table.SceneTable{}).

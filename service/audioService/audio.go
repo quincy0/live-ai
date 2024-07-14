@@ -5,7 +5,6 @@ import (
 
 	"github.com/quincy0/live-ai/dto"
 	"github.com/quincy0/live-ai/service/consoleService"
-	"github.com/quincy0/live-ai/store"
 	"github.com/quincy0/live-ai/tts"
 	"github.com/quincy0/live-ai/util"
 	"github.com/quincy0/qpro/qRoutine"
@@ -18,14 +17,13 @@ func AudioList(ctx context.Context, roomId string) (*dto.RoomData, error) {
 	}
 	for _, script := range roomData.ScriptList {
 		for _, scene := range script.SceneList {
-			fileName := scene.Sum + ".wav"
-			if store.IsExist(ctx, fileName) {
-				scene.Audio = store.FilePrefix + fileName
+			if url := tts.FindAudioURL(ctx, scene.Sum); len(url) > 0 {
+				scene.Audio = url
 			} else {
 				scene.Audio = ""
 				qRoutine.GoSafe(func() {
 					ctxNew := util.InitContextWithSameTrace(ctx)
-					tts.CreateAudio(ctxNew, 0, roomData.TTS.Name, scene.Content)
+					_, _ = tts.CreateChatAudioV2(ctxNew, 0, roomData.TTS.Name, scene.Content)
 				})
 			}
 		}

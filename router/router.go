@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/timeout"
 	"github.com/gin-gonic/gin"
 	"github.com/quincy0/live-ai/controller"
+	"github.com/quincy0/live-ai/util"
 	"github.com/quincy0/qpro/middleware"
 )
 
@@ -34,23 +35,34 @@ func RegisterAudio(g *gin.RouterGroup) {
 			controller.AudioCreate,
 		)
 		v1.GET("/audio/list", controller.AudioList)
+		v1.POST("/audio/notify/:sum", controller.AudioNotify)
 	}
 }
 
 func RegisterLiveMoney(g *gin.RouterGroup) {
 	v1 := g.Group("v1")
 	{
+		v1.POST("/register", controller.Register)
+		v1.POST("/login", util.JWTAuth.LoginHandler)
+		v1.GET("/refresh_token", util.JWTAuth.MiddlewareFunc(), util.JWTAuth.RefreshHandler)
+		v1.GET("/hello", util.JWTAuth.MiddlewareFunc(), controller.Hello)
+
 		v1.GET("/goods/list", controller.GoodsList)
-
 		v1.GET("/product/tags", controller.ProductTagList)
+		v1.GET("/script/tags", controller.ScriptTagList)
+		v1.GET("/template/list", controller.RoomTemplateList)
 
-		v1.POST("/chapter/create", controller.ChapterCreate)
-		v1.GET("/chapter/list", controller.ChapterList)
-		v1.GET("/chapter/info", controller.ChapterInfo)
-		v1.POST("/paragraph/edit", controller.ParagraphEdit)
-		v1.POST("/script/create", controller.ScriptCreate)
-		v1.GET("/script/list", controller.ScriptList)
-		v1.GET("/script/info", controller.ScriptInfo)
-		v1.POST("/scene/edit", controller.SceneEdit)
+		v1.POST("/chapter/create", util.JWTAuth.MiddlewareFunc(), controller.ChapterCreate)
+		v1.GET("/chapter/list", util.JWTAuth.MiddlewareFunc(), controller.ChapterList)
+		v1.GET("/chapter/info", util.JWTAuth.MiddlewareFunc(), controller.ChapterInfo)
+		v1.POST("/paragraph/edit", util.JWTAuth.MiddlewareFunc(), controller.ParagraphEdit)
+		v1.POST("/script/create", util.JWTAuth.MiddlewareFunc(), controller.ScriptCreate)
+		v1.GET("/script/list", util.JWTAuth.MiddlewareFunc(), controller.ScriptList)
+		v1.GET("/script/info", util.JWTAuth.MiddlewareFunc(), controller.ScriptInfo)
+		v1.POST("/scene/edit", util.JWTAuth.MiddlewareFunc(), controller.SceneEdit)
+
+		v1.POST("/room/create", util.JWTAuth.MiddlewareFunc(), controller.RoomCreate)
+		v1.GET("/room/list", util.JWTAuth.MiddlewareFunc(), controller.RoomList)
+		v1.GET("/room/info", util.JWTAuth.MiddlewareFunc(), controller.RoomInfo)
 	}
 }

@@ -10,6 +10,15 @@ type AudioListParam struct {
 	RoomId string `form:"roomId" binding:"required"`
 }
 
+type AudioNotifyParam struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data struct {
+		TaskId   string `json:"task_id"`
+		VideoUrl string `json:"video_url"`
+	} `json:"data"`
+}
+
 type AudioUploadParam struct {
 	ScriptId int64  `form:"scriptId" binding:"required"`
 	Audio    string `form:"audio" binding:"required"`
@@ -63,4 +72,20 @@ type ScriptCreateParam struct {
 type SceneEditParam struct {
 	SceneId int64  `form:"sceneId" binding:"required"`
 	Audio   string `form:"audio" binding:"required"`
+}
+
+type RoomCreateParam struct {
+	RoomName   string `form:"roomName" binding:"required"`
+	ProductTag string `form:"productTag" binding:"required"`
+	Timbre     string `form:"timbre" binding:"required"`
+	TemplateId int    `form:"templateId" binding:"required"`
+}
+
+type RoomInfoParam struct {
+	RoomId int64 `form:"roomId" binding:"required"`
+}
+
+type LoginParam struct {
+	Username string `form:"username" json:"username" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
 }

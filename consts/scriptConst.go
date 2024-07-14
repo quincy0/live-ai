@@ -12,6 +12,12 @@ var TimbreList = map[string]string{
 	TimbreZhaoYuan: "兆远",
 }
 
+type Tag struct {
+	Key  string `json:"key"`
+	Name string `json:"name"`
+	Desc string `json:"desc"`
+}
+
 const (
 	ProductTagClothes   = "clothes"
 	ProductTagMakeups   = "makeups"
@@ -24,13 +30,7 @@ const (
 	ProductTagOther     = "other"
 )
 
-type ProductTag struct {
-	Key  string `json:"key"`
-	Name string `json:"name"`
-	Desc string `json:"desc"`
-}
-
-var ProductTagList = map[string]ProductTag{
+var ProductTagList = map[string]Tag{
 	ProductTagClothes: {
 		Key:  ProductTagClothes,
 		Name: "服装",
@@ -75,5 +75,85 @@ var ProductTagList = map[string]ProductTag{
 		Key:  ProductTagOther,
 		Name: "其他",
 		Desc: "非遗/书籍/文化",
+	},
+}
+
+const (
+	ScriptTagPrologue    = "ST1"
+	ScriptTagLiveRoom    = "ST2"
+	ScriptTagPrice       = "ST3"
+	ScriptTagVoucher     = "ST4"
+	ScriptTagPromotion   = "ST5"
+	ScriptTagFocus       = "ST6"
+	ScriptTagInviteEnter = "ST7"
+	ScriptTagInviteWait  = "ST8"
+	ScriptTagInviteTime  = "ST9"
+	ScriptTagEnd         = "ST10"
+)
+
+var ScriptTagList = []Tag{
+	{
+		Key:  ScriptTagPrologue,
+		Name: "开场白",
+		Desc: "开场白",
+	},
+	{
+		Key:  ScriptTagLiveRoom,
+		Name: "直播间介绍",
+		Desc: "直播间介绍",
+	},
+	{
+		Key:  ScriptTagPrice,
+		Name: "商品价格优势讲解",
+		Desc: "商品价格优势讲解",
+	},
+	{
+		Key:  ScriptTagVoucher,
+		Name: "达人券讲解",
+		Desc: "达人券讲解",
+	},
+	{
+		Key:  ScriptTagPromotion,
+		Name: "促单",
+		Desc: "促单",
+	},
+	{
+		Key:  ScriptTagFocus,
+		Name: "求关注",
+		Desc: "求关注",
+	},
+	{
+		Key:  ScriptTagInviteEnter,
+		Name: "拉入场（直播间外停留用户）",
+		Desc: "拉入场（直播间外停留用户）",
+	},
+	{
+		Key:  ScriptTagInviteWait,
+		Name: "拉停留（直播间外停留用户）",
+		Desc: "拉停留（直播间外停留用户）",
+	},
+	{
+		Key:  ScriptTagInviteTime,
+		Name: "拉时长（直播间外停留用户）",
+		Desc: "拉时长（直播间外停留用户）",
+	},
+	{
+		Key:  ScriptTagEnd,
+		Name: "结束语",
+		Desc: "结束语",
+	},
+}
+
+type RoomTemplate struct {
+	TemplateId int    `json:"templateId"`
+	Name       string `json:"name"`
+	List       []Tag  `json:"list"`
+}
+
+var RoomTemplateList = map[int]RoomTemplate{
+	1: {
+		TemplateId: 1,
+		Name:       "破价法",
+		List:       ScriptTagList,
 	},
 }
