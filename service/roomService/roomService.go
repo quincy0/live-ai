@@ -49,24 +49,27 @@ func RoomCreate(ctx context.Context, userId int64, params dto.RoomCreateParam) (
 	}
 	for _, item := range scriptList {
 		if tag, ok := tagMap[item.ScriptTag]; ok {
+			temp := item
 			if tag.Data == nil {
-				tag.Data = []*table.ScriptTable{&item}
+				tag.Data = []*table.ScriptTable{&temp}
 			} else if len(tag.Data) == tag.Count {
 				check := rand.Int() % 2
-				if item.ScriptId%2 == int64(check) {
-					index := int(item.ScriptId % int64(tag.Count))
-					tag.Data[index] = &item
+				if temp.ScriptId%2 == int64(check) {
+					index := int(temp.ScriptId % int64(tag.Count))
+					tag.Data[index] = &temp
 				}
 			} else {
-				tag.Data = append(tag.Data, &item)
+				tag.Data = append(tag.Data, &temp)
 			}
-
 		}
 	}
 	roomScriptList := make([]*table.RoomScriptTable, 0, len(template.List))
 	for k, t := range template.List {
 		v, ok := tagMap[t.Key]
 		if !ok {
+			continue
+		}
+		if len(v.Data) == 0 {
 			continue
 		}
 		item := v.Data[0]

@@ -3,9 +3,12 @@ module github.com/quincy0/live-ai
 go 1.20
 
 require (
+	github.com/appleboy/gin-jwt/v2 v2.9.2
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/gin-contrib/timeout v1.0.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/quincy0/qpro v0.0.3
+	github.com/redis/go-redis/v9 v9.5.1
 	github.com/spf13/cobra v1.8.1
 	github.com/volcengine/ve-tos-golang-sdk/v2 v2.6.9
 	go.uber.org/zap v1.27.0
@@ -13,7 +16,6 @@ require (
 )
 
 require (
-	github.com/appleboy/gin-jwt/v2 v2.9.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
@@ -58,7 +60,6 @@ require (
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.0.5 // indirect
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5 // indirect
-	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
