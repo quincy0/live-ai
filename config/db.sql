@@ -155,7 +155,8 @@ CREATE TABLE `user_info` (
                              `password` char(32) NOT NULL COMMENT '密码',
                              `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
                              `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-                             PRIMARY KEY (`user_id`)
+                             PRIMARY KEY (`user_id`),
+                             unique key `uk_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户信息';
 
 DROP TABLE IF EXISTS `room_info`;
