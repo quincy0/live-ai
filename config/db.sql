@@ -186,3 +186,14 @@ CREATE TABLE `room_script` (
                                PRIMARY KEY (`id`),
                                UNIQUE KEY `uk_room_script` (`room_id`,`script_id`, `sequence`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='直播间剧本';
+
+CREATE TABLE `timbre_info` (
+                             `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '表自增ID',
+                             `user_id` bigint unsigned NOT NULL COMMENT '用户ID',
+                             `timbre_key` varchar(128) not null default '' comment '音色',
+                             `timbre_name` varchar(256) not null default '' comment '音色',
+                             `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+                             `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+                             PRIMARY KEY (`id`),
+                             UNIQUE KEY `uk_room_script` (`user_id`,`timbre_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='音色信息';

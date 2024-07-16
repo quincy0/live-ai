@@ -64,5 +64,8 @@ func RegisterLiveMoney(g *gin.RouterGroup) {
 		v1.POST("/room/create", util.JWTAuth.MiddlewareFunc(), controller.RoomCreate)
 		v1.GET("/room/list", util.JWTAuth.MiddlewareFunc(), controller.RoomList)
 		v1.GET("/room/info", util.JWTAuth.MiddlewareFunc(), controller.RoomInfo)
+
+		v1.POST("/timbre/create", util.JWTAuth.MiddlewareFunc(), controller.TimbreCreate)
+		v1.GET("/timbre/list", util.JWTAuth.MiddlewareFunc(), controller.TimbreList)
 	}
 }

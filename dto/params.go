@@ -89,3 +89,8 @@ type LoginParam struct {
 	Username string `form:"username" json:"username" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
 }
+
+type TimbreParam struct {
+	Key  string `form:"key" json:"key" binding:"required"`
+	Name string `form:"name" json:"name" binding:"required"`
+}

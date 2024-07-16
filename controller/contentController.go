@@ -266,3 +266,32 @@ func Register(c *gin.Context) {
 	}
 	app.OK(c, map[string]int64{"userId": userId})
 }
+
+func TimbreCreate(c *gin.Context) {
+	user := util.ParseUser(c)
+	ctx := c.Request.Context()
+	var params dto.TimbreParam
+	err := c.ShouldBindJSON(&params)
+	if err != nil {
+		qLog.TraceError(ctx, "get params failed", zap.Error(err))
+		app.Error(c, 100000, err)
+		return
+	}
+	err = contentService.TimbreCreate(ctx, user.UserId, params)
+	if err != nil {
+		app.Error(c, 100409, err)
+		return
+	}
+	app.OK(c, "添加成功")
+}
+
+func TimbreList(c *gin.Context) {
+	user := util.ParseUser(c)
+	ctx := c.Request.Context()
+	list, err := contentService.TimbreList(ctx, user.UserId)
+	if err != nil {
+		app.Error(c, 100410, err)
+		return
+	}
+	app.OK(c, list)
+}

@@ -212,3 +212,39 @@ func SceneEdit(ctx context.Context, sceneId int64, audioURL string) error {
 		Update("audio", audioURL).
 		Error
 }
+
+func TimbreCreate(ctx context.Context, userId int64, params dto.TimbreParam) error {
+	//var timbre table.TimbreInfo
+	//err := qdb.Db.WithContext(ctx).Model(&table.TimbreInfo{}).
+	//	Where("user_id = ? and timbre_key = ?", userId, params.Key).
+	//	Find(&timbre).Error
+
+	timbre := &table.TimbreInfo{
+		Id:         0,
+		UserId:     userId,
+		TimbreKey:  params.Key,
+		TimbreName: params.Name,
+	}
+	return qdb.Db.WithContext(ctx).Model(&table.TimbreInfo{}).Create(timbre).Error
+}
+
+type TimbreItem struct {
+	Key  string `json:"key"`
+	Name string `json:"name"`
+}
+
+func TimbreList(ctx context.Context, userId int64) ([]*TimbreItem, error) {
+	var data []*table.TimbreInfo
+	err := qdb.Db.WithContext(ctx).Model(&table.TimbreInfo{}).Where("user_id = ?", userId).Scan(&data).Error
+	if err != nil {
+		return nil, err
+	}
+	list := make([]*TimbreItem, len(data))
+	for k, v := range data {
+		list[k] = &TimbreItem{
+			Key:  v.TimbreKey,
+			Name: v.TimbreName,
+		}
+	}
+	return list, nil
+}

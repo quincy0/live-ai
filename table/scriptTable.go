@@ -14,3 +14,14 @@ type ScriptTable struct {
 func (p *ScriptTable) TableName() string {
 	return "script"
 }
+
+type TimbreInfo struct {
+	Id         int64  `json:"id" gorm:"PRIMARY_KEY;column:id"`
+	UserId     int64  `json:"user_id" gorm:"column:user_id"`
+	TimbreKey  string `json:"timbre_key" gorm:"column:timbre_key"`
+	TimbreName string `json:"timbre_name" gorm:"column:timbre_name"`
+}
+
+func (t *TimbreInfo) TableName() string {
+	return "timbre_info"
+}
