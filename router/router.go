@@ -67,5 +67,8 @@ func RegisterLiveMoney(g *gin.RouterGroup) {
 
 		v1.POST("/timbre/create", util.JWTAuth.MiddlewareFunc(), controller.TimbreCreate)
 		v1.GET("/timbre/list", util.JWTAuth.MiddlewareFunc(), controller.TimbreList)
+
+		v1.POST("/card/add", util.JWTAuth.MiddlewareFunc(), controller.AddCard)
+		v1.POST("/card/delete", util.JWTAuth.MiddlewareFunc(), controller.DeleteCard)
 	}
 }
