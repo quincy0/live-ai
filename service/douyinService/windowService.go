@@ -158,7 +158,7 @@ func DeleteWindow(douyinId string, productIdStr string) (*CheckDisplayTimeResp, 
 	cookie := string(fileContents)
 	fmt.Println("cookie:", cookie)
 
-	url := "https://buyin.jinritemai.com/api/shop/bind/?verifyFp=verify_lyh1wlcm_7vVhuv21_rChj_40I5_8Tjk_a1HLz1zdEsUf&fp=verify_lyh1wlcm_7vVhuv21_rChj_40I5_8Tjk_a1HLz1zdEsUf&msToken=wpvKosiNYs9TX-MZgBQ7BsMf3z7_6H0wzjSlVM6L7M9tSzea--IGt8AEwfBXo-RwjtL9EvFUWOQso-47JL8KfZX_r90-KgD-8zJz2ohHjkIkn9cfaA5_JushqZKpZus%253D&a_bogus=QX80%252FVz6dkfskd8D5I9LfY3qfCFgYBrm0SVkMDgblaO8tg39HMY19exElKkvMsRjNs%252FDIeEjy4hST3BMiOCyA3vXHWgKW9o%252F-ggmKl3hso0j53inCy8mE0ii-7sAtePQsvHlEKimoweHKm8h09oHmhK4b1dzFgf3qJLz4E%253D%253D"
+	url := "https://buyin.jinritemai.com/api/anchor/shop/batch_unbind?verifyFp=verify_lyh1wlcm_7vVhuv21_rChj_40I5_8Tjk_a1HLz1zdEsUf&fp=verify_lyh1wlcm_7vVhuv21_rChj_40I5_8Tjk_a1HLz1zdEsUf&msToken=oXJivZOPi6ovPFkzKJxWMu-k0GPEnVSEhdkpfo3MQPbRsFdQe_6y507eVEvVjrO9YnPrCgn0rXp6Qq-FohSZCrfgubKYhVOYXpPG3LtuMc75wy6RNjbKpA%3D%3D&a_bogus=m6mh%2Ffh6dDIPffLX5IKLfY3qf73JYBrz0SVkMDgbBcO82639HMTI9exEA8XvyUDjNs%2FDIejjy4hCTNHMiOCyA3vXHWgKW9o%2F-ggmKl3hsom7-3intL0grUvq-hs1Sl925kp-EKigq7lHKRj2099c5kIlO6ZCcHgjxiSmtn3FvIW%3D"
 
 	payload := strings.NewReader(fmt.Sprintf(`{"pmts":[{"promotion_id":"%s","bind_source":25}],"hide_status":2}`, productIdStr))
 
@@ -167,13 +167,16 @@ func DeleteWindow(douyinId string, productIdStr string) (*CheckDisplayTimeResp, 
 	method := "POST"
 	req, err := http.NewRequest(method, url, payload)
 
+	//--data-raw '{"promotion_ids":["3683420290857218177"]}' \
+	//--compressed
+
 	req.Header.Add("authority", "buyin.jinritemai.com")
 	req.Header.Add("accept", "application/json, text/plain, */*")
 	req.Header.Add("accept-language", "zh-CN,zh;q=0.9,en;q=0.8")
 	req.Header.Add("content-type", "application/json")
 	req.Header.Add("cookie", cookie)
 	req.Header.Add("origin", "https://buyin.jinritemai.com")
-	req.Header.Add("referer", "https://buyin.jinritemai.com/dashboard/merch-picking-cart?btm_ppre=a10091.b089178.c0.d0&btm_pre=a10091.b24215.c809509.d0&btm_show_id=87ab81a2-65c9-4e49-8333-31f076337390&pre_universal_page_params_id=&universal_page_params_id=e596e1f6-2d0b-4c28-b8bf-08a8d780c6c7")
+	req.Header.Add("referer", "https://buyin.jinritemai.com/dashboard/shopwindow/goods-list?pre_universal_page_params_id=&universal_page_params_id=ad232f55-99c4-4733-9cd2-0c70684b164c")
 	req.Header.Add("sec-ch-ua", "\"Chromium\";v=\"116\", \"Not)A;Brand\";v=\"24\", \"Google Chrome\";v=\"116\"")
 	req.Header.Add("sec-ch-ua-mobile", "?0")
 	req.Header.Add("sec-ch-ua-platform", "\"macOS\"")
