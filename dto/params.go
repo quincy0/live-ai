@@ -64,9 +64,15 @@ type ParagraphEditParam struct {
 }
 
 type ScriptCreateParam struct {
-	ChapterId   int64  `form:"chapterId"`
-	ScriptTitle string `form:"scriptTitle"`
-	Timbre      string `form:"timbre"`
+	ScriptTitle string       `form:"scriptTitle"`
+	ScriptTag   string       `form:"scriptTag"`
+	ProductTag  string       `from:"productTag"`
+	Timbre      string       `form:"timbre"`
+	Scenes      []*SceneItem `form:"scenes"`
+}
+type SceneItem struct {
+	Name  string `form:"name"`
+	Audio string `form:"audio"`
 }
 
 type SceneEditParam struct {
@@ -74,11 +80,16 @@ type SceneEditParam struct {
 	Audio   string `form:"audio" binding:"required"`
 }
 
-type RoomCreateParam struct {
+type RoomCreateParamV0 struct {
 	RoomName   string `form:"roomName" binding:"required"`
 	ProductTag string `form:"productTag" binding:"required"`
 	Timbre     string `form:"timbre" binding:"required"`
 	TemplateId int    `form:"templateId" binding:"required"`
+}
+
+type RoomCreateParam struct {
+	RoomName string  `form:"roomName" binding:"required"`
+	Scripts  []int64 `form:"scripts" binding:"required"`
 }
 
 type RoomInfoParam struct {
@@ -93,4 +104,16 @@ type LoginParam struct {
 type TimbreParam struct {
 	Key  string `form:"key" json:"key" binding:"required"`
 	Name string `form:"name" json:"name" binding:"required"`
+}
+
+type ChapterParam struct {
+	Timbre   string `form:"timbre"`
+	PageSize int    `form:"pageSize"`
+	PageNum  int    `form:"pageNum"`
+}
+
+type ScriptParam struct {
+	Timbre   string `form:"timbre"`
+	PageSize int    `form:"pageSize"`
+	PageNum  int    `form:"pageNum"`
 }

@@ -56,6 +56,7 @@ func RegisterLiveMoney(g *gin.RouterGroup) {
 		v1.GET("/chapter/list", util.JWTAuth.MiddlewareFunc(), controller.ChapterList)
 		v1.GET("/chapter/info", util.JWTAuth.MiddlewareFunc(), controller.ChapterInfo)
 		v1.POST("/paragraph/edit", util.JWTAuth.MiddlewareFunc(), controller.ParagraphEdit)
+
 		v1.POST("/script/create", util.JWTAuth.MiddlewareFunc(), controller.ScriptCreate)
 		v1.GET("/script/list", util.JWTAuth.MiddlewareFunc(), controller.ScriptList)
 		v1.GET("/script/info", util.JWTAuth.MiddlewareFunc(), controller.ScriptInfo)
@@ -64,6 +65,7 @@ func RegisterLiveMoney(g *gin.RouterGroup) {
 		v1.POST("/room/create", util.JWTAuth.MiddlewareFunc(), controller.RoomCreate)
 		v1.GET("/room/list", util.JWTAuth.MiddlewareFunc(), controller.RoomList)
 		v1.GET("/room/info", util.JWTAuth.MiddlewareFunc(), controller.RoomInfo)
+		v1.GET("/room/delete", util.JWTAuth.MiddlewareFunc(), controller.RoomDelete)
 
 		v1.POST("/timbre/create", util.JWTAuth.MiddlewareFunc(), controller.TimbreCreate)
 		v1.GET("/timbre/list", util.JWTAuth.MiddlewareFunc(), controller.TimbreList)

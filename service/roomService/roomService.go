@@ -3,9 +3,7 @@ package roomService
 import (
 	"context"
 	"errors"
-	"math/rand"
 
-	"github.com/quincy0/live-ai/consts"
 	"github.com/quincy0/live-ai/dto"
 	"github.com/quincy0/live-ai/table"
 	"github.com/quincy0/qpro/qLog"
@@ -20,90 +18,45 @@ type TagItem struct {
 }
 
 func RoomCreate(ctx context.Context, userId int64, params dto.RoomCreateParam) (int64, error) {
-	template, ok := consts.RoomTemplateList[params.TemplateId]
-	if !ok {
-		return 0, errors.New("undefined template id")
-	}
 	var scriptList []table.ScriptTable
+
 	err := qdb.Db.WithContext(ctx).
 		Model(&table.ScriptTable{}).
-		Where("product_tag = ? and timbre = ?", params.ProductTag, params.Timbre).
+		Where("script_id in ?", params.Scripts).
 		Scan(&scriptList).
 		Error
 	if err != nil {
 		return 0, err
 	}
 	if len(scriptList) == 0 {
-		return 0, errors.New("该商品分类或音色暂未配置剧本")
+		return 0, errors.New("illegal scripts")
 	}
-	tagMap := make(map[string]*TagItem, len(template.List))
-	for _, t := range template.List {
-		if v, ok := tagMap[t.Key]; ok {
-			v.Count += 1
-		} else {
-			tagMap[t.Key] = &TagItem{
-				Count: 1,
-				Data:  nil,
-			}
-		}
-	}
-	for _, item := range scriptList {
-		if tag, ok := tagMap[item.ScriptTag]; ok {
-			temp := item
-			if tag.Data == nil {
-				tag.Data = []*table.ScriptTable{&temp}
-			} else if len(tag.Data) == tag.Count {
-				check := rand.Int() % 2
-				if temp.ScriptId%2 == int64(check) {
-					index := int(temp.ScriptId % int64(tag.Count))
-					tag.Data[index] = &temp
-				}
-			} else {
-				tag.Data = append(tag.Data, &temp)
-			}
-		}
-	}
-	roomScriptList := make([]*table.RoomScriptTable, 0, len(template.List))
-	for k, t := range template.List {
-		v, ok := tagMap[t.Key]
-		if !ok {
-			continue
-		}
-		if len(v.Data) == 0 {
-			continue
-		}
-		item := v.Data[0]
-		if v.Count > 1 && v.Count == len(v.Data) {
-			v.Count -= 1
-			v.Data = v.Data[1:]
-		}
 
-		roomScript := &table.RoomScriptTable{
-			Id:          0,
-			RoomId:      0,
-			ScriptId:    item.ScriptId,
-			ScriptTitle: item.ScriptTitle,
-			ProductTag:  item.ProductTag,
-			Timbre:      item.Timbre,
-			ScriptTag:   item.ScriptTag,
-			Sequence:    k,
-		}
-		roomScriptList = append(roomScriptList, roomScript)
-	}
 	roomInfo := &table.RoomTable{
 		RoomId:     0,
 		UserId:     userId,
 		RoomName:   params.RoomName,
-		ProductTag: params.ProductTag,
-		Timbre:     params.Timbre,
-		TemplateId: params.TemplateId,
+		ProductTag: scriptList[0].ProductTag,
+		Timbre:     scriptList[0].Timbre,
+		TemplateId: 0,
 	}
+
+	roomScriptList := make([]*table.RoomScriptTable, len(scriptList))
+
 	err = qdb.Db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(roomInfo).Error; err != nil {
 			return err
 		}
-		for _, v := range roomScriptList {
-			v.RoomId = roomInfo.RoomId
+		for k, v := range scriptList {
+			roomScriptList[k] = &table.RoomScriptTable{
+				RoomId:      roomInfo.RoomId,
+				ScriptId:    v.ScriptId,
+				ScriptTitle: v.ScriptTitle,
+				ProductTag:  v.ProductTag,
+				Timbre:      v.Timbre,
+				ScriptTag:   v.ScriptTag,
+				Sequence:    k,
+			}
 		}
 		if err := tx.CreateInBatches(roomScriptList, 100).Error; err != nil {
 			return err
@@ -114,6 +67,7 @@ func RoomCreate(ctx context.Context, userId int64, params dto.RoomCreateParam) (
 		return 0, err
 	}
 	return roomInfo.RoomId, nil
+
 }
 
 func RoomList(ctx context.Context, userId int64, page dto.PageParam) ([]*table.RoomTable, int64, error) {
@@ -219,4 +173,12 @@ func RoomInfo(ctx context.Context, userId int64, roomId int64) (*RoomDetail, err
 	roomDetail.Scripts = scripts
 
 	return roomDetail, nil
+}
+
+func RoomDelete(ctx context.Context, userId int64, roomId int64) error {
+	room := table.RoomTable{
+		RoomId: roomId,
+		UserId: userId,
+	}
+	return qdb.Db.WithContext(ctx).Delete(room).Error
 }

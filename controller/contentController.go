@@ -48,7 +48,7 @@ func ChapterCreate(c *gin.Context) {
 func ChapterList(c *gin.Context) {
 	user := util.ParseUser(c)
 	ctx := c.Request.Context()
-	var params = dto.PageParam{
+	var params = dto.ChapterParam{
 		PageSize: 100,
 		PageNum:  1,
 	}
@@ -127,7 +127,7 @@ func ScriptCreate(c *gin.Context) {
 func ScriptList(c *gin.Context) {
 	user := util.ParseUser(c)
 	ctx := c.Request.Context()
-	var params = dto.PageParam{
+	var params = dto.ScriptParam{
 		PageSize: 100,
 		PageNum:  1,
 	}
@@ -241,6 +241,25 @@ func RoomInfo(c *gin.Context) {
 		return
 	}
 	app.OK(c, roomInfo)
+}
+
+func RoomDelete(c *gin.Context) {
+	user := util.ParseUser(c)
+	ctx := c.Request.Context()
+	var params dto.RoomInfoParam
+	err := c.ShouldBindQuery(&params)
+	if err != nil {
+		qLog.TraceError(ctx, "get params failed", zap.Error(err))
+		app.Error(c, 100000, err)
+		return
+	}
+	err = roomService.RoomDelete(ctx, user.UserId, params.RoomId)
+	if err != nil {
+		qLog.TraceError(ctx, "delete room info failed", zap.Error(err))
+		app.Error(c, 700002, err)
+		return
+	}
+	app.OK(c, "delete succeed")
 }
 
 func Hello(c *gin.Context) {
