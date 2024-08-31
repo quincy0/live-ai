@@ -57,7 +57,7 @@ func ChapterCreate(ctx context.Context, userId int64, params *dto.ChapterCreateP
 	return chapter.ChapterId, nil
 }
 
-func ChapterList(ctx context.Context, userId int64, page dto.PageParam) ([]*table.ChapterTable, int64, error) {
+func ChapterList(ctx context.Context, userId int64, page dto.ChapterParam) ([]*table.ChapterTable, int64, error) {
 	var list []*table.ChapterTable
 	err := qdb.Db.WithContext(ctx).Model(&table.ChapterTable{}).
 		Where("user_id = ?", userId).
@@ -114,32 +114,28 @@ func ParagraphEdit(ctx context.Context, params dto.ParagraphEditParam) error {
 }
 
 func ScriptCreate(ctx context.Context, userId int64, params *dto.ScriptCreateParam) (int64, error) {
-	chapter, err := ChapterInfo(ctx, userId, params.ChapterId)
-	if err != nil {
-		return 0, err
-	}
 	script := &table.ScriptTable{
 		ScriptId:    0,
 		UserId:      userId,
 		ScriptTitle: params.ScriptTitle,
-		ScriptTag:   chapter.ScriptTag,
-		ProductTag:  chapter.ProductTag,
-		Summary:     chapter.Summary,
+		ScriptTag:   params.ScriptTag,
+		ProductTag:  params.ProductTag,
+		Summary:     "",
 		Timbre:      params.Timbre,
 		LastPlay:    0,
 	}
-	list := make([]*table.SceneTable, len(chapter.List))
-	for k, v := range chapter.List {
+	list := make([]*table.SceneTable, len(params.Scenes))
+	for k, v := range params.Scenes {
 		list[k] = &table.SceneTable{
 			SceneId:   0,
 			ScriptId:  0,
-			SceneName: v.ParagraphTitle,
-			Content:   v.Content,
-			Audio:     "",
+			SceneName: v.Name,
+			Content:   "",
+			Audio:     v.Audio,
 		}
 	}
 
-	err = qdb.Db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+	err := qdb.Db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Create(script).Error
 		if err != nil {
 			return err
@@ -159,13 +155,17 @@ func ScriptCreate(ctx context.Context, userId int64, params *dto.ScriptCreatePar
 	return script.ScriptId, nil
 }
 
-func ScriptList(ctx context.Context, userId int64, page dto.PageParam) ([]*table.ScriptTable, int64, error) {
+func ScriptList(ctx context.Context, userId int64, params dto.ScriptParam) ([]*table.ScriptTable, int64, error) {
 	var list []*table.ScriptTable
-	err := qdb.Db.WithContext(ctx).Model(&table.ScriptTable{}).
-		Where("user_id = ?", userId).
-		Order("script_id").
-		Offset((page.PageNum - 1) * page.PageSize).
-		Limit(page.PageSize).
+	tx := qdb.Db.WithContext(ctx).Model(&table.ScriptTable{})
+	if params.Timbre == "" {
+		tx = tx.Where("user_id = ?", userId)
+	} else {
+		tx = tx.Where("user_id = ? and timbre = ?", userId, params.Timbre)
+	}
+	err := tx.Order("script_id").
+		Offset((params.PageNum - 1) * params.PageSize).
+		Limit(params.PageSize).
 		Scan(&list).
 		Error
 	if err != nil {
