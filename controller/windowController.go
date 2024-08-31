@@ -27,6 +27,24 @@ func GetWindow(c *gin.Context) {
 	app.OK(c, result)
 }
 
+func GetWindowFromDB(c *gin.Context) {
+
+	user := util.ParseUser(c)
+	qLog.Info(fmt.Sprintf("AddWindow userId: %d", user.UserId))
+	ctx := c.Request.Context()
+
+	//ctx := c.Request.Context()
+	var params dto.WindowGetParam
+	err := c.ShouldBindJSON(&params)
+
+	result, err := douyinService.GetWindowFromDB(ctx, params.DouyinId)
+	if err != nil {
+		app.Error(c, 100410, err)
+		return
+	}
+	app.OK(c, result)
+}
+
 func AddWindow(c *gin.Context) {
 
 	user := util.ParseUser(c)
@@ -54,6 +72,24 @@ func DeleteWindow(c *gin.Context) {
 	err := c.ShouldBindJSON(&params)
 
 	result, err := douyinService.DeleteWindow(params.DouyinId, params.ProductId)
+	if err != nil {
+		app.Error(c, 100410, err)
+		return
+	}
+	app.OK(c, result)
+}
+
+func UpdateWindow(c *gin.Context) {
+
+	user := util.ParseUser(c)
+	qLog.Info(fmt.Sprintf("AddWindow userId: %d", user.UserId))
+	ctx := c.Request.Context()
+
+	//ctx := c.Request.Context()
+	var params dto.WindowUpdateParam
+	err := c.ShouldBindJSON(&params)
+
+	result, err := douyinService.UpdateWindow(ctx, params)
 	if err != nil {
 		app.Error(c, 100410, err)
 		return

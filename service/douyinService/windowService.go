@@ -1,9 +1,15 @@
 package douyinService
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/PaesslerAG/jsonpath"
+	"github.com/quincy0/live-ai/dto"
+	"github.com/quincy0/live-ai/table"
+	"github.com/quincy0/qpro/qdb"
+	"gorm.io/gorm"
 	"io"
 	"net/http"
 	"strings"
@@ -97,6 +103,26 @@ func GetWindow(douyinId string) ([]ProductDetail, error) {
 	return products, nil
 }
 
+func GetWindowFromDB(ctx context.Context, douyinId string) ([]table.GoodsWindow, error) {
+	var goodsWindows []table.GoodsWindow
+
+	// 根据 douyinId 查询 GoodsWindow 表
+	err := qdb.Db.WithContext(ctx).
+		Model(&table.GoodsWindow{}).
+		Where("account_id = ?", douyinId).
+		Find(&goodsWindows).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("no records found")
+		}
+		return nil, err
+	}
+
+	// 返回查询到的 GoodsWindow 切片
+	return goodsWindows, nil
+}
+
 func AddWindow(douyinId string, productIdStr string) (*CheckDisplayTimeResp, error) {
 
 	fileContents, err := getCookie(douyinId)
@@ -145,6 +171,51 @@ func AddWindow(douyinId string, productIdStr string) (*CheckDisplayTimeResp, err
 	ret := &CheckDisplayTimeResp{}
 	_ = json.Unmarshal(body, ret)
 	return ret, nil
+}
+
+func UpdateWindow(ctx context.Context, params dto.WindowUpdateParam) (*table.GoodsWindow, error) {
+	var goodsWindow table.GoodsWindow
+
+	// 查询数据库是否存在该记录
+	// 查询数据库是否存在该记录，同时根据 product_id 和 douyin_id 进行查询
+	err := qdb.Db.WithContext(ctx).
+		Model(&table.GoodsWindow{}).
+		Where("product_id = ? AND account_id = ?", params.ProductionId, params.DouyinId).
+		First(&goodsWindow).Error
+
+	if err != nil {
+		// 记录不存在，或者查询出现错误
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("record not found")
+		}
+		return nil, err
+	}
+
+	// 如果记录存在，更新 credit 和 totalAmount
+	err = qdb.Db.WithContext(ctx).
+		Model(&table.GoodsWindow{}).
+		Where("id = ?", goodsWindow.ID).
+		Updates(table.GoodsWindow{
+			Credit:      params.Credit,
+			TotalAmount: params.Count,
+		}).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	// 更新后，再次查询数据库获取最新的 goodsWindow 数据
+	err = qdb.Db.WithContext(ctx).
+		Model(&table.GoodsWindow{}).
+		Where("id = ?", goodsWindow.ID).
+		First(&goodsWindow).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	// 返回更新后的 goodsWindow 实例
+	return &goodsWindow, nil
 }
 
 func DeleteWindow(douyinId string, productIdStr string) (*CheckDisplayTimeResp, error) {
