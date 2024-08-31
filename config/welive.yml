@@ -15,8 +15,8 @@ log:
   maxAge: 30
   maxBackups: 10
   maxsize: 500
-  path: /app/logs/welive.log
-  #path: ./logs/welive.log
+#  path: /app/logs/welive.log
+  path: ./logs/welive.log
   # for tracing
   collectorURL: "129.226.203.96:4317"
   insecure: true

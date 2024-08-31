@@ -1,5 +1,9 @@
 package douyinService
 
+type Douyin struct {
+	cookies string
+}
+
 type Redpacket struct {
 	RedpacketData *RedpacketData `json:"redpacket_data"`
 }

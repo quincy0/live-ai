@@ -9,18 +9,11 @@ import (
 	"strings"
 )
 
-type Douyin struct {
-	cookies string
-}
+//查询红包列表
 
-const (
-	// GetPlatformCalendar 获取csrf Token
-	GetPlatformCalendar = "https://buyin.jinritemai.com/api/buyin/marketing/anchor_redpacket/get_platform_calendar"
-	CreateRedPacket     = "https://buyin.jinritemai.com/api/buyin/marketing/anchor_redpacket/create"
-	DisplayRedPacket    = "https://buyin.jinritemai.com/api/buyin/marketing/anchor_redpacket/edit_display_time"
-	DeleteRedPacket     = "https://buyin.jinritemai.com/api/buyin/marketing/anchor_redpacket/update_status"
-	CheckDisplayTime    = "https://buyin.jinritemai.com/api/buyin/marketing/anchor_redpacket/check_display_time"
-)
+//func (s *Douyin) GetRedPacketList() {
+//
+//}
 
 // 创建红包
 
@@ -73,17 +66,6 @@ func (s *Douyin) CreateRedPack(name string, startTime, endTime int64, totalAmoun
 	ret := &CreateRedPacketResp{}
 	_ = json.Unmarshal(body, ret)
 	return ret, nil
-}
-
-//查询红包列表
-
-func (s *Douyin) GetRedPacketList() {
-
-}
-
-// 橱窗列表
-func (s *Douyin) GetTransferList() {
-
 }
 
 //红包投放 redpacket_activity_id=7382090484015300914&display_time_type=1&redpack_type=11&period_display_after_now=120&apply_period=120
