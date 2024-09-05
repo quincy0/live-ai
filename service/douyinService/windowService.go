@@ -8,6 +8,7 @@ import (
 	"github.com/PaesslerAG/jsonpath"
 	"github.com/quincy0/live-ai/dto"
 	"github.com/quincy0/live-ai/table"
+	"github.com/quincy0/qpro/qLog"
 	"github.com/quincy0/qpro/qdb"
 	"gorm.io/gorm"
 	"io"
@@ -190,6 +191,8 @@ func UpdateWindow(ctx context.Context, params dto.WindowUpdateParam) (*table.Goo
 		}
 		return nil, err
 	}
+
+	qLog.Info(fmt.Sprintf("UpdateWindow Credit: %d,Count:%d", params.Credit, params.Count))
 
 	// 如果记录存在，更新 credit 和 totalAmount
 	err = qdb.Db.WithContext(ctx).

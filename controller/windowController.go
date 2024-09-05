@@ -30,7 +30,7 @@ func GetWindow(c *gin.Context) {
 func GetWindowFromDB(c *gin.Context) {
 
 	user := util.ParseUser(c)
-	qLog.Info(fmt.Sprintf("AddWindow userId: %d", user.UserId))
+	qLog.Info(fmt.Sprintf("GetWindowFromDB userId: %d", user.UserId))
 	ctx := c.Request.Context()
 
 	//ctx := c.Request.Context()
@@ -65,7 +65,7 @@ func AddWindow(c *gin.Context) {
 func DeleteWindow(c *gin.Context) {
 
 	user := util.ParseUser(c)
-	qLog.Info(fmt.Sprintf("AddWindow userId: %d", user.UserId))
+	qLog.Info(fmt.Sprintf("DeleteWindow userId: %d", user.UserId))
 
 	//ctx := c.Request.Context()
 	var params dto.WindowAddParam
@@ -82,7 +82,7 @@ func DeleteWindow(c *gin.Context) {
 func UpdateWindow(c *gin.Context) {
 
 	user := util.ParseUser(c)
-	qLog.Info(fmt.Sprintf("AddWindow userId: %d", user.UserId))
+	qLog.Info(fmt.Sprintf("UpdateWindow userId: %d", user.UserId))
 	ctx := c.Request.Context()
 
 	//ctx := c.Request.Context()

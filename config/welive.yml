@@ -29,7 +29,7 @@ database:
   maxOpenConn: 5
   maxIdleConn: 3
 redis:
-  host: 101.126.93.55
+  host: 8.146.210.87
   port: 6379
   dataBase: 0
   password: aeyes2024
