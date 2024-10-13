@@ -78,5 +78,10 @@ func RegisterLiveMoney(g *gin.RouterGroup) {
 		v1.POST("/window/delete", util.JWTAuth.MiddlewareFunc(), controller.DeleteWindow)
 		v1.POST("/window/db/update", util.JWTAuth.MiddlewareFunc(), controller.UpdateWindow)
 		v1.POST("/window/db/get", util.JWTAuth.MiddlewareFunc(), controller.GetWindowFromDB)
+
+		v1.POST("/goodsWindowCouponStrategy/update", util.JWTAuth.MiddlewareFunc(), controller.UpdateGoodsWindowCouponStrategy)
+		v1.POST("/goodsWindowCouponStrategy/getALL", util.JWTAuth.MiddlewareFunc(), controller.GetGoodsWindowCouponStrategyFromDB)
+		v1.POST("/goodsWindowCouponStrategy/add", util.JWTAuth.MiddlewareFunc(), controller.AddGoodsWindowCouponStrategyToDB)
+		v1.POST("/goodsWindowCouponStrategy/delete", util.JWTAuth.MiddlewareFunc(), controller.DeleteGoodsWindowCouponStrategy)
 	}
 }

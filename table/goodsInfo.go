@@ -36,3 +36,15 @@ type GoodsWindow struct {
 func (GoodsWindow) TableName() string {
 	return "goods_window"
 }
+
+type GoodsWindowCouponStrategy struct {
+	ID                  uint64 `json:"id" gorm:"primary_key;auto_increment;column:id"`
+	CreditStrategy      string `json:"credit_strategy" gorm:"column:creditStrategy;type:varchar(255);nullable"`
+	TotalAmountStrategy string `json:"total_amount_strategy" gorm:"column:total_amountStrategy;type:varchar(255);nullable"`
+	RoomID              string `json:"room_id" gorm:"column:room_id;type:varchar(255);not null"`
+	AccountID           string `json:"account_id" gorm:"column:account_id;type:varchar(255);not null"`
+}
+
+func (GoodsWindowCouponStrategy) TableName() string {
+	return "goods_window_coupon_strategy"
+}
